@@ -1,0 +1,172 @@
+<?php
+// PHP Code to generate a password
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $length = $_POST['length'];
+    $includeSpecialChars = isset($_POST['special_chars']);
+    $password = generatePassword($length, $includeSpecialChars);
+}
+
+function generatePassword($length, $includeSpecialChars) {
+    // Define the character sets
+    $lowercase = 'abcdefghijklmnopqrstuvwxyz';
+    $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $numbers = '0123456789';
+    $specialChars = '!@#$%^&*()-_=+[]{}|;:,.<>?';
+
+    // Combine all characters
+    $characters = $lowercase . $uppercase . $numbers;
+    if ($includeSpecialChars) {
+        $characters .= $specialChars;
+    }
+
+    // Generate the password
+    $password = '';
+    for ($i = 0; $i < $length; $i++) {
+        $password .= $characters[rand(0, strlen($characters) - 1)];
+    }
+
+    return $password;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <style>
+        /* General body styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #ff6f61, #ff3d3d);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        /* Gradient animation */
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Container styles */
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 400px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Animation for the title */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        input[type="number"], input[type="checkbox"] {
+            margin: 15px 0;
+            padding: 12px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            border: none;
+            width: 100%;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        input[type="number"]:focus, input[type="checkbox"]:focus {
+            border: 2px solid #ffcc00;
+        }
+
+        /* Button styling */
+        button {
+            padding: 12px 25px;
+            background-color: #ffcc00;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ffb300;
+            transform: scale(1.05);
+        }
+
+        /* Result box styles */
+        .result {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 5px;
+            font-size: 1.3em;
+            letter-spacing: 1px;
+        }
+
+        .result p {
+            word-wrap: break-word;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Password Generator</h1>
+        <form method="POST">
+            <label for="length">Password Length (6-20):</label><br>
+            <input type="number" name="length" id="length" min="6" max="20" value="12" required><br><br>
+
+            <label for="special_chars">Include Special Characters</label>
+            <input type="checkbox" name="special_chars" id="special_chars"><br><br>
+
+            <button type="submit">Generate Password</button>
+        </form>
+
+        <?php if (isset($password)): ?>
+            <div class="result">
+                <strong>Generated Password:</strong>
+                <p><?php echo htmlspecialchars($password); ?></p>
+            </div>
+        <?php endif; ?>
+    </div>
+</body>
+</html>
